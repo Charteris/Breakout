@@ -21,6 +21,7 @@ set(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ResourceManager.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/Shader.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/Texture.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Entity.h
 )
 
 set(SOURCES
@@ -30,6 +31,7 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/resourceManager.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/shader.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/texture.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/entity.cpp
 )
 
 set(EXTERN ${CMAKE_CURRENT_SOURCE_DIR}/src/extern/glad.c)

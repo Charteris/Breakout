@@ -3,19 +3,14 @@
 
 #include <glad/glad.h>
 
+#include "Logs.h"
+
 namespace breakout::util {
 
 /**
  * A simple Texture class to store the texture width, height, image format, and other details
  */
 class Texture {
- private:
-  unsigned int textureId;
-  unsigned int width, height;
-  unsigned int internalFormat, imageFormat;
-  unsigned int wrapS, wrapT;
-  unsigned int filterMin, filterMax;
-
  public:
   /**
    * Default Texture constructor defining a linearly repeating RGB texture
@@ -45,6 +40,13 @@ class Texture {
    * Deletes the current texture
    */
   void deleteTexture();
+
+ private:
+  unsigned int textureId;
+  unsigned int width, height;
+  unsigned int internalFormat, imageFormat;
+  unsigned int wrapS, wrapT;
+  unsigned int filterMin, filterMax;
 };
 
 }  // namespace breakout::util

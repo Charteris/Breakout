@@ -2,19 +2,21 @@
 #define GAME_H
 
 #include <iostream>
+#include <map>
+#include <memory>
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "ResourceManager.h"
+#include "entity/Entity.h"
 
 namespace breakout {
 
 enum GameState { ACTIVE, MENU, WIN };
 
 class Game {
- private:
-  GameState state;
-  bool keys[1024];
-  unsigned int screenWidth, screenHeight;
-
  public:
   Game(unsigned int width, unsigned int height);
   ~Game();
@@ -23,6 +25,12 @@ class Game {
   void processInput(float deltaTime);
   void update(float deltaTime);
   void render();
+
+ private:
+  GameState state;
+  bool keys[1024];
+  unsigned int screenWidth, screenHeight;
+  std::map<std::string, std::shared_ptr<entity::Entity>> entityRegister;
 };
 
 }  // namespace breakout

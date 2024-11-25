@@ -34,6 +34,7 @@ void Texture::generate(unsigned int textureWidth, unsigned int textureHeight, un
 }
 
 void Texture::bind() const {
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, textureId);
 }
 

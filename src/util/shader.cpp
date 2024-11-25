@@ -8,13 +8,15 @@ void Shader::validateShader(GLuint shader, GLenum status) const {
   glGetShaderiv(shader, status, &success);
   if (!success) {
     glGetShaderInfoLog(shader, 512, NULL, infoLog);
-    ERROR("Shader failed to initialise with error:\n" << infoLog);
-    throw std::logic_error("Shader failed to initialise");
+    std::string errorMessage{"Shader failed to initialise with error:\n"};
+    errorMessage = errorMessage.append(infoLog);
+    ERROR(errorMessage);
+    throw std::logic_error(errorMessage);
   }
 }
 
 unsigned int Shader::createShader(GLenum shaderType, const char* source) const {
-  unsigned int shaderPart = glCreateShader(GL_VERTEX_SHADER);
+  unsigned int shaderPart = glCreateShader(shaderType);
   glShaderSource(shaderPart, 1, &source, NULL);
   glCompileShader(shaderPart);
   validateShader(shaderPart);
@@ -55,6 +57,10 @@ void Shader::compile(const char* vertexSource, const char* fragmentSource,
   if (geometrySource != nullptr) {
     glDeleteShader(geometryShader);
   }
+}
+
+void Shader::setInteger(const char* varName, int value) {
+  glUniform1f(glGetUniformLocation(shaderId, varName), value);
 }
 
 void Shader::setFloat(const char* varName, float value) {

@@ -14,9 +14,9 @@
 #include "util/Shader.h"
 #include "util/Texture.h"
 
-#define BUFFER_SIZE 50
-#define RELATIVE_SHADER_PATH "../res/shaders/"
-#define RELATIVE_TEXTURE_PATH "../res/textures/"
+#define BUFFER_SIZE 200
+#define RELATIVE_SHADER_PATH std::string("../res/shaders/")
+#define RELATIVE_TEXTURE_PATH std::string("../res/textures/")
 
 namespace breakout {
 
@@ -24,6 +24,46 @@ namespace breakout {
  * Singleton to manage and cache all shaders and textures used throughout the game
  */
 class ResourceManager {
+ public:
+  /**
+   * Loads and caches a Shader from its constituent files
+   * @param vertexShaderFilename The name of the GLSL vertex shader code file
+   * @param fragmentShaderFilename The name of the GLSL fragment shader code file
+   * @param geometryShaderFilename The name of the GLSL geometry shader code file
+   * @return A copy of the newly created Shader
+   */
+  static util::Shader LoadShader(std::string shaderName, const char* vertexShaderFilename,
+                                 const char* fragmentShaderFilename,
+                                 const char* geometryShaderFilename = nullptr);
+
+  /**
+   * Returns a cached Shader instance
+   * @param shaderName The name of the Shader being accessed
+   * @return A copy of the cached Shader instance
+   */
+  static util::Shader GetShader(std::string shaderName);
+
+  /**
+   * Loads and caches a Texture from its file
+   * @param filename The name of the texture file
+   * @param alpha True if the texture should contain alpha values, otherwise false
+   * @return A const reference to the newly created Texture
+   */
+  static const util::Texture& LoadTexture(std::string textureName, const char* textureFile,
+                                          bool alpha);
+
+  /**
+   * Returns a cached Texture instance
+   * @param textureName The name of the Texture being accessed
+   * @return A const reference to the cached Texture instance
+   */
+  static const util::Texture& GetTexture(std::string textureName);
+
+  /**
+   * Deletes all Shaders and Textures from the cache
+   */
+  static void ClearResources();
+
  private:
   static std::map<std::string, util::Shader> Shaders;
   static std::map<std::string, util::Texture> Textures;
@@ -58,45 +98,6 @@ class ResourceManager {
    * @return A newly created Texture
    */
   static util::Texture loadTextureFromFile(const char* filename, bool alpha);
-
- public:
-  /**
-   * Loads and caches a Shader from its constituent files
-   * @param vertexShaderFilename The name of the GLSL vertex shader code file
-   * @param fragmentShaderFilename The name of the GLSL fragment shader code file
-   * @param geometryShaderFilename The name of the GLSL geometry shader code file
-   * @return A reference to the newly created Shader
-   */
-  static util::Shader& LoadShader(std::string shaderName, const char* vertexShaderFilename,
-                                  const char* fragmentShaderFilename,
-                                  const char* geometryShaderFilename = nullptr);
-
-  /**
-   * Returns a cached Shader instance
-   * @param shaderName The name of the Shader being accessed
-   * @return A reference to the cached Shader instance
-   */
-  static util::Shader& GetShader(std::string shaderName);
-
-  /**
-   * Loads and caches a Texture from its file
-   * @param filename The name of the texture file
-   * @param alpha True if the texture should contain alpha values, otherwise false
-   * @return A reference to the newly created Texture
-   */
-  static util::Texture& LoadTexture(std::string textureName, const char* textureFile, bool alpha);
-
-  /**
-   * Returns a cached Texture instance
-   * @param textureName The name of the Texture being accessed
-   * @return A reference to the cached Texture instance
-   */
-  static util::Texture& GetTexture(std::string textureName);
-
-  /**
-   * Deletes all Shaders and Textures from the cache
-   */
-  static void ClearResources();
 };
 
 }  // namespace breakout

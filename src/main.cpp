@@ -1,11 +1,12 @@
 #define STB_IMAGE_IMPLEMENTATION
+#define GLFW_INCLUDE_GLCOREARB
 
 #include <cstdlib>
 
 #include "Config.h"
 #include "ResourceManager.h"
 
-int main() {
+int main(int argc, char* argv[]) {
   GLFWwindow* window;
   try {
     window = breakout::initialiseOpenGL();

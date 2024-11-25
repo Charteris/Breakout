@@ -6,8 +6,7 @@ std::map<std::string, util::Shader> ResourceManager::Shaders;
 std::map<std::string, util::Texture> ResourceManager::Textures;
 
 std::string ResourceManager::readShaderCode(const char* filename) {
-  char resourcePath[BUFFER_SIZE] = "";
-  sprintf(resourcePath, "%S%s\0", RELATIVE_SHADER_PATH, filename);
+  std::string resourcePath = RELATIVE_SHADER_PATH.append(filename);
   std::ifstream resourceStream(resourcePath);
   resourceStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
@@ -21,12 +20,12 @@ util::Shader ResourceManager::loadShaderFromFile(const char* vertexShaderFilenam
                                                  const char* fragmentShaderFilename,
                                                  const char* geometryShaderFilename) {
   std::string vertexCode, fragmentCode, geometryCode;
-  bool isLoadedWithGeometryShader = (geometryShaderFilename != nullptr);
+  bool usingGeometryShader = (geometryShaderFilename != nullptr);
 
   try {
     vertexCode = readShaderCode(vertexShaderFilename);
     fragmentCode = readShaderCode(fragmentShaderFilename);
-    if (isLoadedWithGeometryShader) {
+    if (usingGeometryShader) {
       geometryCode = readShaderCode(geometryShaderFilename);
     }
 
@@ -38,7 +37,7 @@ util::Shader ResourceManager::loadShaderFromFile(const char* vertexShaderFilenam
 
   util::Shader shader;
   shader.compile(vertexCode.c_str(), fragmentCode.c_str(),
-                 isLoadedWithGeometryShader ? geometryCode.c_str() : nullptr);
+                 usingGeometryShader ? geometryCode.c_str() : nullptr);
   return shader;
 }
 
@@ -49,34 +48,40 @@ util::Texture ResourceManager::loadTextureFromFile(const char* filename, bool al
   }
 
   int width, height, channels;
-  char texturePath[BUFFER_SIZE] = "";
-  sprintf(texturePath, "%S%s\0", RELATIVE_TEXTURE_PATH, filename);
-  unsigned char* data = stbi_load(texturePath, &width, &height, &channels, 0);
+  std::string texturePath = RELATIVE_TEXTURE_PATH.append(filename);
+  unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &channels, 0);
 
+  if (data == NULL) {
+    std::string stbiError = std::string("STBI failed to load texture").append(texturePath);
+    ERROR(stbiError);
+    throw std::domain_error(stbiError);
+  }
+
+  DEBUG("Loaded texture " << texturePath << ": " << width << " " << height << " " << channels);
   texture.generate(width, height, data);
   stbi_image_free(data);
   return texture;
 }
 
-util::Shader& ResourceManager::LoadShader(std::string shaderName, const char* vertexShaderFilename,
-                                          const char* fragmentShaderFilename,
-                                          const char* geometryShaderFilename) {
+util::Shader ResourceManager::LoadShader(std::string shaderName, const char* vertexShaderFilename,
+                                         const char* fragmentShaderFilename,
+                                         const char* geometryShaderFilename) {
   Shaders[shaderName] =
       loadShaderFromFile(vertexShaderFilename, fragmentShaderFilename, geometryShaderFilename);
   return Shaders[shaderName];
 }
 
-util::Shader& ResourceManager::GetShader(std::string shaderName) {
+util::Shader ResourceManager::GetShader(std::string shaderName) {
   return Shaders[shaderName];
 }
 
-util::Texture& ResourceManager::LoadTexture(std::string textureName, const char* textureFile,
-                                            bool alpha) {
+const util::Texture& ResourceManager::LoadTexture(std::string textureName, const char* textureFile,
+                                                  bool alpha) {
   Textures[textureName] = loadTextureFromFile(textureFile, alpha);
   return Textures[textureName];
 }
 
-util::Texture& ResourceManager::GetTexture(std::string textureName) {
+const util::Texture& ResourceManager::GetTexture(std::string textureName) {
   return Textures[textureName];
 }
 
