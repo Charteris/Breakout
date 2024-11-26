@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -11,6 +12,7 @@
 
 #include "ResourceManager.h"
 #include "entity/Entity.h"
+#include "objects/Level.h"
 
 namespace breakout {
 
@@ -30,6 +32,7 @@ class Game {
   GameState state;
   bool keys[1024];
   unsigned int screenWidth, screenHeight;
+  std::vector<std::shared_ptr<objects::Level>> levels;
   std::map<std::string, std::shared_ptr<entity::Entity>> entityRegister;
 };
 

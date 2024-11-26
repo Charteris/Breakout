@@ -22,6 +22,8 @@ set(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/Shader.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/Texture.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Brick.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/objects/Level.h
 )
 
 set(SOURCES
@@ -32,6 +34,8 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/shader.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/texture.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/entity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/brick.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/objects/level.cpp
 )
 
 set(EXTERN ${CMAKE_CURRENT_SOURCE_DIR}/src/extern/glad.c)

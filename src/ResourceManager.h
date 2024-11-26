@@ -32,16 +32,16 @@ class ResourceManager {
    * @param geometryShaderFilename The name of the GLSL geometry shader code file
    * @return A copy of the newly created Shader
    */
-  static util::Shader LoadShader(std::string shaderName, const char* vertexShaderFilename,
-                                 const char* fragmentShaderFilename,
-                                 const char* geometryShaderFilename = nullptr);
+  static util::Shader& LoadShader(std::string shaderName, const char* vertexShaderFilename,
+                                  const char* fragmentShaderFilename,
+                                  const char* geometryShaderFilename = nullptr);
 
   /**
    * Returns a cached Shader instance
    * @param shaderName The name of the Shader being accessed
    * @return A copy of the cached Shader instance
    */
-  static util::Shader GetShader(std::string shaderName);
+  static util::Shader& GetShader(std::string shaderName);
 
   /**
    * Loads and caches a Texture from its file

@@ -22,7 +22,7 @@ class Entity {
 
   void render();
 
- private:
+ protected:
   util::Shader shader;
   const util::Texture& texture;
 

@@ -63,15 +63,15 @@ util::Texture ResourceManager::loadTextureFromFile(const char* filename, bool al
   return texture;
 }
 
-util::Shader ResourceManager::LoadShader(std::string shaderName, const char* vertexShaderFilename,
-                                         const char* fragmentShaderFilename,
-                                         const char* geometryShaderFilename) {
+util::Shader& ResourceManager::LoadShader(std::string shaderName, const char* vertexShaderFilename,
+                                          const char* fragmentShaderFilename,
+                                          const char* geometryShaderFilename) {
   Shaders[shaderName] =
       loadShaderFromFile(vertexShaderFilename, fragmentShaderFilename, geometryShaderFilename);
   return Shaders[shaderName];
 }
 
-util::Shader ResourceManager::GetShader(std::string shaderName) {
+util::Shader& ResourceManager::GetShader(std::string shaderName) {
   return Shaders[shaderName];
 }
 
