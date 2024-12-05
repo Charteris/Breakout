@@ -4,12 +4,11 @@
 
 namespace breakout::objects {
 
-Level::Level(util::Shader& shader, const char* filename, unsigned int levelWidth,
-             unsigned int levelHeight) {
-  glm::vec2 brickSize{SCREEN_WIDTH / levelWidth, SCREEN_HEIGHT / (2.0f * levelHeight)};
+Level::Level(util::Shader& shader, const LevelConfig& config) {
+  glm::vec2 brickSize{SCREEN_WIDTH / config.width, SCREEN_HEIGHT / (2.0f * config.height)};
   glm::vec2 currentPosition = brickSize * 0.5f;
 
-  std::ifstream level(RELATIVE_LEVEL_PATH.append(filename));
+  std::ifstream level(RELATIVE_LEVEL_PATH.append(config.name));
   std::string line;
 
   const auto& solidTexture = ResourceManager::GetTexture("solidBlock");
@@ -21,10 +20,10 @@ Level::Level(util::Shader& shader, const char* filename, unsigned int levelWidth
         continue;
       }
 
-      DEBUG("Position: " << currentPosition.x << ", " << currentPosition.y);
       entity::BrickType type = (entity::BrickType)(character - '0');
-      entity::Brick brick{shader, type == entity::BrickType::SOLID ? solidTexture : blockTexture,
-                          type, currentPosition, brickSize};
+      auto brick = std::make_shared<entity::Brick>(
+          shader, type == entity::BrickType::SOLID ? solidTexture : blockTexture, type,
+          currentPosition, brickSize);
       bricks.emplace_back(brick);
       currentPosition.x += brickSize.x;
     }
@@ -34,9 +33,21 @@ Level::Level(util::Shader& shader, const char* filename, unsigned int levelWidth
   }
 }
 
+bool Level::handleCollisions(const std::shared_ptr<entity::Entity>& entity) {
+  for (auto& brick : bricks) {
+    if (entity->getBounds().intersects(brick->getBounds())) {
+      DEBUG(*entity << " collided with " << *brick);
+      entity->onCollision(brick);
+      brick->onCollision(entity);
+      return true;
+    }
+  }
+  return false;
+}
+
 void Level::render() {
   for (auto& brick : bricks) {
-    brick.render();
+    brick->render();
   }
 }
 

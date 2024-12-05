@@ -21,31 +21,61 @@ void Game::init() {
   ResourceManager::LoadTexture("block", "Block.png", false);
   ResourceManager::LoadTexture("solidBlock", "SolidBlock.png", false);
 
-  levels.emplace_back(std::make_shared<objects::Level>(spriteShader, "Level1.csv", 10, 10));
+  activeLevel = std::make_shared<objects::Level>(spriteShader, objects::Levels.at(0));
 
-  entityRegister.insert({"ball", std::make_shared<entity::Entity>(
-                                     spriteShader, ballTexture,
-                                     glm::vec2(screenWidth / 2.0f, screenHeight * 3.0f / 4.0f),
-                                     glm::vec2(25.0f, 25.0f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f))});
+  auto ballTranslation = entity::Translation({screenWidth / 2.0f, screenHeight * 3.0f / 4.0f},
+                                             {0.75f, 1.0f}, {25.0f, 25.0f}, 0.0f);
   entityRegister.insert(
-      {"paddle",
-       std::make_shared<entity::Entity>(
-           spriteShader, paddleTexture, glm::vec2(screenWidth / 2.0f, screenHeight * 4.5f / 5.0f),
-           glm::vec2(150.0f, 30.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f))});
+      {"ball", std::make_shared<entity::Entity>(spriteShader, ballTexture, ballTranslation,
+                                                glm::vec3(0.0f, 1.0f, 0.0f))});
+
+  auto paddleTranslation =
+      entity::Translation({screenWidth / 2.0f, screenHeight * 4.5f / 5.0f}, {150.0f, 30.0f});
+  entityRegister.insert(
+      {"paddle", std::make_shared<entity::Entity>(spriteShader, paddleTexture, paddleTranslation,
+                                                  glm::vec3(0.0f, 0.0f, 1.0f))});
 }
 
-void Game::update(float deltaTime) {}
+void Game::update(float deltaTime) {
+  std::string prevEntity = "";
+  for (auto& [key, entity] : entityRegister) {
+    if (activeLevel->handleCollisions(entity)) {
+      break;
+    }
+
+    if (prevEntity != "" && checkEntityCollision(entity, entityRegister.at(prevEntity))) {
+      break;
+    }
+    prevEntity = key;
+  }
+
+  for (auto& [key, entity] : entityRegister) {
+    entity->update(deltaTime);
+  }
+}
 
 void Game::processInput(float deltaTime) {}
 
 void Game::render() {
-  for (auto& level : levels) {
-    level->render();
-  }
-
+  activeLevel->render();
   for (auto& [_, entity] : entityRegister) {
     entity->render();
   }
+}
+
+bool Game::checkEntityCollision(const std::shared_ptr<entity::Entity>& entityA,
+                                const std::shared_ptr<entity::Entity>& entityB) {
+  if (entityA->getId() == entityB->getId()) {
+    return false;
+  }
+
+  if (entityA->getBounds().intersects(entityB->getBounds())) {
+    DEBUG(*entityA << " collided with " << *entityB);
+    entityA->onCollision(entityB);
+    entityB->onCollision(entityA);
+    return true;
+  }
+  return false;
 }
 
 }  // namespace breakout

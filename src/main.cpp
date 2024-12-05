@@ -4,13 +4,21 @@
 #include <cstdlib>
 
 #include "Config.h"
+#include "Logs.h"
 #include "ResourceManager.h"
 
 int main(int argc, char* argv[]) {
+#ifdef USE_LOG_FILES
+  logs::openLogs();
+#endif
+
   GLFWwindow* window;
   try {
     window = breakout::initialiseOpenGL();
   } catch (const std::domain_error& error) {
+#ifdef USE_LOG_FILES
+    logs::closeLogs();
+#endif
     return EXIT_FAILURE;
   }
 
@@ -38,5 +46,8 @@ int main(int argc, char* argv[]) {
 
   breakout::ResourceManager::ClearResources();
   glfwTerminate();
+#ifdef USE_LOG_FILES
+  logs::closeLogs();
+#endif
   return EXIT_SUCCESS;
 }

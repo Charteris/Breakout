@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_definitions(PRINT_DEBUG_LOGS)
 
+# add_compile_definitions(USE_LOG_FILES)
+
 # Setup project dependencies
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -23,6 +25,7 @@ set(HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util/Texture.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Brick.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/entity/Structures.h
   ${CMAKE_CURRENT_SOURCE_DIR}/src/objects/Level.h
 )
 
